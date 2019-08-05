@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- bootstrap cdn -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .jumbotron {
+            background-image: url('https://picsum.photos/400/300/?=1');
+            background-size: cover;
+            background-repeat: no-repeat;
+            text-align: center;
+            color: white;
+            height: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #FFF;
+        }
+
+        .previous {
+            margin-right: 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: black;
+        }
+
+        .next {
+            margin-left: 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- bootstrap cdn -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <!-- vue cdn -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.js'></script>
+    <div id="app">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1>{{ title }}</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <!-- <a class="previous" v-on:click="changeIndex(-1)">&laquo;</a> -->
+            <a v-if="index > 0" class="previous" @click="changeIndex(-1)">&laquo;</a>
+            <div class="col-md-1 rounded-left bg-success">{{ index+1 }}</div>
+            <div class="col-md-2 bg-danger">{{ today.type }}</div>
+            <div class="col-md-4 rounded-right bg-warning">{{ today.title }}</div>
+            <!-- <a class="next" v-on:click="changeIndex(1)">&raquo;</a> -->
+            <a v-if="index < total-1" class="next" @click="changeIndex(1)">&raquo;</a>
+        </div>
+    </div>
+    <script>
+        let data = {
+            title: 'Vue.js 30 Days Challenge',
+            src: 'https://picsum.photos/400/300/?=1',
+            index: 0,
+            menu: [
+                { type: '主廚的話', title: '餐點簡介與相關說明', link: 'https://picsum.photos/300/200/?blur=1' },
+                { type: '餐具擺盤', title: '萬用白瓷 VS Code 與套裝工具組', link: 'https://picsum.photos/300/200/?blur=2' },
+                { type: '開胃餐點', title: '中式資料綁定佐無毒 jQuery 畫面處理', link: 'https://picsum.photos/300/200/?blur=3' },
+                { type: '開胃餐點', title: '古早味事件燉畫面綁定', link: 'https://picsum.photos/300/200/?blur=4' },
+                { type: '開胃餐點', title: '清爽表單處理佐雙向資料', link: 'https://picsum.photos/300/200/?blur=5' },
+                { type: '開胃餐點', title: '使用者輸入焗列表呈現', link: 'https://picsum.photos/300/200/?blur=6' },
+                { type: '開胃餐點', title: '期間限定篩選佐資料轉換', link: 'https://picsum.photos/300/200/?blur=7' },
+                { type: '開胃餐點', title: '峰峰相連互動式資料表單', link: 'https://picsum.photos/300/200/?blur=8' },
+                { type: '風味沙拉', title: '天然 CSS 過場佐 jQuery 動畫', link: 'https://picsum.photos/300/200/?blur=9' },
+                { type: '風味沙拉', title: '異國風情資料觀測與設定', link: 'https://picsum.photos/300/200/?blur=10' },
+                { type: '風味沙拉', title: '有機發酵生命週期', link: 'https://picsum.photos/300/200/?blur=11' },
+                { type: '風味沙拉', title: '家鄉通訊錄佐手作 API #1', link: 'https://picsum.photos/300/200/?blur=12' },
+                { type: '風味沙拉', title: '家鄉通訊錄佐手作 API #2', link: 'https://picsum.photos/300/200/?blur=13' },
+                { type: '用餐插曲', title: '怎麼沒有魯肉飯!? 其他菜色瀏覽', link: 'https://picsum.photos/300/200/?blur=14' },
+                { type: '餐具擺盤', title: '特製雕花 Vue-cli 3.0 與 Node.js 開發環境', link: 'https://picsum.photos/300/200/?blur=15' },
+                { type: '主廚推薦', title: '科學單檔模組化料理', link: 'https://picsum.photos/300/200/?blur=16' },
+                { type: '主廚推薦', title: '清燉嫩煮百頁路由', link: 'https://picsum.photos/300/200/?blur=17' },
+                { type: '主廚推薦', title: '蜂蜜燴巢狀路由', link: 'https://picsum.photos/300/200/?blur=18' },
+                { type: '主廚推薦', title: '五彩繽紛路由參數與監控', link: 'https://picsum.photos/300/200/?blur=19' },
+                { type: '主廚推薦', title: '共享式集中數據管理大雜燴', link: 'https://picsum.photos/300/200/?blur=20' },
+                { type: '主廚推薦', title: '精緻模組化數據塔', link: 'https://picsum.photos/300/200/?blur=21' },
+                { type: '用餐插曲', title: '我吃不下了!! 食用順序的選擇與進程', link: 'https://picsum.photos/300/200/?blur=22' },
+                { type: '總匯拼盤', title: '復古總匯 TodoList 燴路由模組', link: 'https://picsum.photos/300/200/?blur=23' },
+                { type: '總匯拼盤', title: '復古總匯 TodoList 燴資料模組', link: 'https://picsum.photos/300/200/?blur=24' },
+                { type: '總匯拼盤', title: '復古總匯 TodoList 燴頁面模組 #1', link: 'https://picsum.photos/300/200/?blur=25' },
+                { type: '總匯拼盤', title: '復古總匯 TodoList 燴頁面模組 #2', link: 'https://picsum.photos/300/200/?blur=26' },
+                { type: '總匯拼盤', title: '復古總匯 TodoList 燴頁面模組 #3', link: 'https://picsum.photos/300/200/?blur=27' },
+                { type: '精選甜點', title: '靜態渲染 VuePress 漸層飲', link: 'https://picsum.photos/300/200/?blur=28' },
+                { type: '精選甜點', title: '風情萬種 Nuxt.js 千層糕', link: 'https://picsum.photos/300/200/?blur=29' },
+                { type: '主廚的話', title: '餐後心得與其他資訊', link: 'https://picsum.photos/300/200/?blur=30' },
+            ]
+        }
+        new Vue({
+            el: '#app',
+            data: data,
+            computed: {
+                today() {
+                    return this.menu[this.index]
+                },
+                total() {
+                    return this.menu.length
+                }
+            },
+            methods: {
+                changeIndex(direction) {
+                    this.index = (this.index + direction + this.total) % this.total
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
