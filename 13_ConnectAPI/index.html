@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- bootstrap cdn -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <!-- bootstrap cdn -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <!-- vue cdn -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.js'></script>
+    <!-- axios cdn -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <div id="app">
+        <div class="container">
+            <h2>練習透過API新增修改刪除資料</h2>
+            <section v-if="loading">
+                Loading...
+            </section>
+            <section v-else>
+                <form>
+                    <div class="form-row">
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Name" v-model.trim="input.name">
+                        </div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" placeholder="Email" v-model.trim="input.email">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary mb-2" @click="submitHandler">Submit</button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-warning mb-2" @click="cancelHandler">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <div class="col">
+                <table class="table table-striped">
+                    <thead>
+                        <tr class="text-center">
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th colspan="4"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" v-for="(contact, index) in contacts">
+                            <td>{{ contact.id }}</td>
+                            <td>{{ contact.name }}</td>
+                            <td>{{ contact.email }}</td>
+                            <td>
+                                <button class="btn btn-warning mb-2" @click="editHandler(index)">Edit</button>
+                                <button class="btn btn-danger mb-2" @click="deleteHandler(index)">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                loading: false,
+                editIndex: null,
+                contacts: [],
+                input: {
+                    name: '',
+                    email: ''
+                }
+            },
+            methods: {
+                submitHandler() {
+                    let { name, email } = this.input
+                    if (!name || !email) return
+                    this.loading = true
+                    if (this.editIndex !== null) {
+                        axios.put('http://localhost:8888/contact/' + this.contacts[this.editIndex].id, this.input)
+                            .then((res) => {
+                                this.contacts[this.editIndex] = res.data
+                                this.loading = false
+                                this.cancelHandler()
+                            }).catch((error) => {
+                                console.log(error)
+                            })
+                    } else {
+                        axios.post('http://localhost:8888/contact', this.input)
+                            .then((res) => {
+                                this.contacts.push(res.data)
+                                this.loading = false
+                                this.cancelHandler()
+                            }).catch((error) => {
+                                console.log(error)
+                            })
+                    }
+
+                },
+                cancelHandler() {
+                    this.editIndex = null
+                    this.input.name = ''
+                    this.input.email = ''
+                },
+                editHandler(index) {
+                    this.editIndex = index
+                    let { name, email } = this.contacts[index]
+                    this.input = {
+                        name,
+                        email
+                    }
+                },
+                deleteHandler(index) {
+                    let target = this.contacts[index]
+                    if (confirm(`確認刪除 ${target.name} ?`)) {
+                        this.loading = true
+                        axios.delete('http://localhost:8888/contact/' + target.id)
+                            .then((res) => {
+                                this.contacts.splice(index, 1)
+                                this.loading = false
+                                this.cancelHandler()
+                            }).catch((error) => {
+                                console.log(error)
+                            })
+                    }
+                }
+            },
+            mounted() {
+                this.loading = true;
+                axios.get('http://localhost:8888/contact')
+                    .then((res) => {
+                        this.contacts = res.data
+                        // this.cancelHandler()
+                        this.loading = false
+                    }).catch((error) => {
+                        console.log(error)
+                    })
+            }
+        })
+    </script>
+</body>
+
+</html>
