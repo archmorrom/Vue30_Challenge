@@ -1,0 +1,13 @@
+{
+  "name": "12_jsonserver",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "json-server": "^0.15.0"
+  },
+  "scripts": {
+    "json": "json-server --watch db.json --port 8888"
+  },
+  "author": "rom",
+  "license": "MIT"
+}
