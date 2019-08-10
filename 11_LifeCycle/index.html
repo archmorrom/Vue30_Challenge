@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- vue cdn -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.js'></script>
+    <div>
+        <a href="http://bluezyz.com/index.php/archives/223/"></a>
+    </div>
+    <div id="app">
+        <h2>打開Console看LifeCycle</h2>
+        <p>{{ msg }}</p>
+    </div>
+    <script>
+        var vm = new Vue({
+            data: {
+                msg: 'Hello Vus.js',
+                link: 'http://bluezyz.com/index.php/archives/223/'
+            },
+            beforeCreate() {
+                console.log('\nbeforeCreate 被執行');
+                console.log('beforeCreate 中無法調用 data 和 methods: msg = ' + this.msg);
+            },
+            created() {
+                console.log('\ncreated 被執行');
+                console.log('created 中可調用 data 和 methods: msg = ' + this.msg);
+            },
+            beforeMount() {
+                console.log('\nbeforeMount 被執行');
+                console.log('檢查此時的DOM:\n');
+                console.log(this.$el.outerHTML);
+                console.log('尚未將msg的值渲染到DOM\n\n');
+            },
+            mounted() {
+                console.log('\nmounted 被執行');
+                console.log('檢查此時的DOM:\n');
+                console.log(this.$el.outerHTML);
+                console.log('已經渲將msg的值渲染到DOM\n\n');
+            },
+            beforeUpdate() {
+                console.log('\nbeforeUpdate 被執行');
+                console.log('beforeUpdate 中調用 msg = ' + this.msg);
+                console.log('檢查此時的DOM:\n');
+                console.log(this.$el.outerHTML);
+            },
+            updated() {
+                console.log('\nupdated 被執行');
+                console.log('updated 中調用 msg = ' + this.msg);
+                console.log('檢查此時的DOM:\n');
+                console.log(this.$el.outerHTML);
+            },
+            beforeDestroy() {
+                console.log('\nbeforeDestroy 被執行');
+                console.log('此時修改msg仍會觸發update的過程');
+                this.msg = 'change msg to beforeDestroy';
+                console.log('msg = ' + this.msg);
+            },
+            destroyed() {
+                console.log('\ndestroyed 被執行');
+                console.log('已取消綁定因此修改msg不會觸發update的過程');
+            }
+        });
+
+        setTimeout(function () {
+            vm.$mount('#app');
+        }, 3000)
+
+        setTimeout(function () {
+            vm.$data.msg = 'change msg';
+        }, 6000)
+
+        setTimeout(function () {
+            vm.$destroy();
+        }, 9000)
+    </script>
+</body>
+
+</html>
